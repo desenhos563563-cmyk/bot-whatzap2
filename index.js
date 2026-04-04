@@ -1,4 +1,4 @@
-// IMPORTS
+// IMPORTS ESSENCIAIS
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
@@ -13,7 +13,7 @@ process.on('uncaughtException', (err) => {
     console.error('❌ EXCEPTION:', err);
 });
 
-// CLIENT
+// CLIENT CONFIGURADO PARA CHROMIUM DO SISTEMA
 const client = new Client({
     authStrategy: new LocalAuth({
         clientId: "bot",
@@ -21,6 +21,7 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
+        executablePath: '/usr/bin/chromium', // Caminho do Chromium no Render
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -30,7 +31,6 @@ const client = new Client({
             '--no-zygote',
             '--disable-gpu'
         ]
-        // Nenhum executablePath, Puppeteer interno cuida disso
     }
 });
 
