@@ -1,3 +1,13 @@
+console.log("🚀 Iniciando bot...");
+
+process.on('unhandledRejection', (err) => {
+    console.error('❌ ERRO NÃO TRATADO:', err);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('❌ EXCEPTION:', err);
+});
+
 const client = new Client({
     authStrategy: new LocalAuth({
         clientId: "bot",
@@ -5,7 +15,15 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-gpu'
+        ]
     }
 });
 
