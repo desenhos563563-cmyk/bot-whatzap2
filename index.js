@@ -1,8 +1,9 @@
 // IMPORTS
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const fs = require('fs');
 
-// LOGS E DEBUG
+// LOGS
 console.log("🚀 Iniciando bot...");
 
 process.on('unhandledRejection', (err) => {
@@ -13,14 +14,30 @@ process.on('uncaughtException', (err) => {
     console.error('❌ EXCEPTION:', err);
 });
 
-// CLIENT CONFIGURADO PARA RENDER
+// FUNÇÃO PARA DETECTAR CHROMIUM DISPONÍVEL
+function detectChromium() {
+    const paths = [
+        '/usr/bin/chromium',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/google-chrome-stable',
+        '/usr/bin/google-chrome'
+    ];
+    for (const path of paths) {
+        if (fs.existsSync(path)) {
+            console.log(`✅ Chromium encontrado em: ${path}`);
+            return path;
+        }
+    }
+    console.error('❌ Nenhum Chromium encontrado no sistema. Abortando.');
+    process.exit(1);
+}
+
+// CLIENTE CONFIGURADO
 const client = new Client({
-    authStrategy: new LocalAuth({
-        clientId: "bot",
-        dataPath: "/tmp/session"
-    }),
+    authStrategy: new LocalAuth({ clientId: "bot", dataPath: "/tmp/session" }),
     puppeteer: {
         headless: true,
+        executablePath: detectChromium(), // usa o Chromium detectado
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -29,8 +46,7 @@ const client = new Client({
             '--no-first-run',
             '--no-zygote',
             '--disable-gpu'
-        ],
-        executablePath: '/usr/bin/chromium-browser' // usa Chromium do sistema Render
+        ]
     }
 });
 
@@ -45,27 +61,15 @@ client.on('ready', () => {
     console.log('🤖 Bot pronto!');
 });
 
-// ======================= MENSAGENS =======================
-client.on('message', async message => {
-    console.log(`📩 Mensagem recebida de ${message.from}: ${message.body}`);
-    if (message.body.toLowerCase() === 'oi') {
-        await message.reply('Olá! 🤖 Bot funcionando.');
+// ======================= TESTE DE MENSAGEM =======================
+client.on('message', async msg => {
+    console.log(`📩 Mensagem recebida de ${msg.from}: ${msg.body}`);
+    if (msg.body.toLowerCase() === 'oi') {
+        await msg.reply('Olá! 🤖 Bot funcionando.');
     }
 });
 
-// INICIALIZA O CLIENT
-client.initialize();
-
-// ======================= MENSAGENS =======================
-// Exemplo básico de resposta automática
-client.on('message', async message => {
-    console.log(`📩 Mensagem recebida de ${message.from}: ${message.body}`);
-    if (message.body.toLowerCase() === 'oi') {
-        await message.reply('Olá! 🤖 Bot funcionando.');
-    }
-});
-
-// INICIALIZA O CLIENT
+// INICIA O CLIENTE
 client.initialize();
 // ======================= DADOS =======================
 const pizzas = [
