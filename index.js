@@ -1,4 +1,4 @@
-// IMPORTS (ESSENCIAL)
+// IMPORTS
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
@@ -30,7 +30,7 @@ const client = new Client({
             '--no-zygote',
             '--disable-gpu'
         ]
-        // remove executablePath completamente
+        // executável do Chromium será gerenciado automaticamente pelo whatsapp-web.js
     }
 });
 
@@ -44,6 +44,9 @@ client.on('qr', qr => {
 client.on('ready', () => {
     console.log('🤖 Bot pronto!');
 });
+
+// INICIALIZA O CLIENT
+client.initialize();
 
 // ======================= DADOS =======================
 const pizzas = [
