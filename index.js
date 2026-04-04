@@ -13,7 +13,7 @@ process.on('uncaughtException', (err) => {
     console.error('❌ EXCEPTION:', err);
 });
 
-// CLIENT
+// CLIENT CONFIGURADO PARA RENDER
 const client = new Client({
     authStrategy: new LocalAuth({
         clientId: "bot",
@@ -29,8 +29,8 @@ const client = new Client({
             '--no-first-run',
             '--no-zygote',
             '--disable-gpu'
-        ]
-        // NÃO definimos executablePath para evitar conflitos no Render
+        ],
+        executablePath: '/usr/bin/chromium-browser' // usa Chromium do sistema Render
     }
 });
 
@@ -44,6 +44,17 @@ client.on('qr', qr => {
 client.on('ready', () => {
     console.log('🤖 Bot pronto!');
 });
+
+// ======================= MENSAGENS =======================
+client.on('message', async message => {
+    console.log(`📩 Mensagem recebida de ${message.from}: ${message.body}`);
+    if (message.body.toLowerCase() === 'oi') {
+        await message.reply('Olá! 🤖 Bot funcionando.');
+    }
+});
+
+// INICIALIZA O CLIENT
+client.initialize();
 
 // ======================= MENSAGENS =======================
 // Exemplo básico de resposta automática
