@@ -1,3 +1,8 @@
+// IMPORTS (ESSENCIAL)
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+// LOGS E DEBUG
 console.log("🚀 Iniciando bot...");
 
 process.on('unhandledRejection', (err) => {
@@ -8,6 +13,7 @@ process.on('uncaughtException', (err) => {
     console.error('❌ EXCEPTION:', err);
 });
 
+// CLIENT
 const client = new Client({
     authStrategy: new LocalAuth({
         clientId: "bot",
@@ -29,7 +35,7 @@ const client = new Client({
 
 // ======================= QR =======================
 client.on('qr', qr => {
-    console.log('Escaneie o QR abaixo (ou copie o log em outro dispositivo):');
+    console.log('Escaneie o QR abaixo:');
     qrcode.generate(qr, { small: true });
 });
 
