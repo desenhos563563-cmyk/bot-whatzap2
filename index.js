@@ -1,9 +1,8 @@
 // IMPORTS
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const fs = require('fs');
 
-// LOGS
+// LOGS E DEBUG
 console.log("🚀 Iniciando bot...");
 
 process.on('unhandledRejection', (err) => {
@@ -14,30 +13,14 @@ process.on('uncaughtException', (err) => {
     console.error('❌ EXCEPTION:', err);
 });
 
-// FUNÇÃO PARA DETECTAR CHROMIUM DISPONÍVEL
-function detectChromium() {
-    const paths = [
-        '/usr/bin/chromium',
-        '/usr/bin/chromium-browser',
-        '/usr/bin/google-chrome-stable',
-        '/usr/bin/google-chrome'
-    ];
-    for (const path of paths) {
-        if (fs.existsSync(path)) {
-            console.log(`✅ Chromium encontrado em: ${path}`);
-            return path;
-        }
-    }
-    console.error('❌ Nenhum Chromium encontrado no sistema. Abortando.');
-    process.exit(1);
-}
-
-// CLIENTE CONFIGURADO
+// CLIENT
 const client = new Client({
-    authStrategy: new LocalAuth({ clientId: "bot", dataPath: "/tmp/session" }),
+    authStrategy: new LocalAuth({
+        clientId: "bot",
+        dataPath: "/tmp/session"
+    }),
     puppeteer: {
         headless: true,
-        executablePath: detectChromium(), // usa o Chromium detectado
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -47,6 +30,7 @@ const client = new Client({
             '--no-zygote',
             '--disable-gpu'
         ]
+        // Nenhum executablePath, Puppeteer interno cuida disso
     }
 });
 
@@ -61,15 +45,7 @@ client.on('ready', () => {
     console.log('🤖 Bot pronto!');
 });
 
-// ======================= TESTE DE MENSAGEM =======================
-client.on('message', async msg => {
-    console.log(`📩 Mensagem recebida de ${msg.from}: ${msg.body}`);
-    if (msg.body.toLowerCase() === 'oi') {
-        await msg.reply('Olá! 🤖 Bot funcionando.');
-    }
-});
-
-// INICIA O CLIENTE
+// INICIALIZA O CLIENT
 client.initialize();
 // ======================= DADOS =======================
 const pizzas = [
