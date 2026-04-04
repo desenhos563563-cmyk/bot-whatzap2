@@ -30,7 +30,7 @@ const client = new Client({
             '--no-zygote',
             '--disable-gpu'
         ]
-        // executável do Chromium será gerenciado automaticamente pelo whatsapp-web.js
+        // NÃO definimos executablePath para evitar conflitos no Render
     }
 });
 
@@ -45,9 +45,17 @@ client.on('ready', () => {
     console.log('🤖 Bot pronto!');
 });
 
+// ======================= MENSAGENS =======================
+// Exemplo básico de resposta automática
+client.on('message', async message => {
+    console.log(`📩 Mensagem recebida de ${message.from}: ${message.body}`);
+    if (message.body.toLowerCase() === 'oi') {
+        await message.reply('Olá! 🤖 Bot funcionando.');
+    }
+});
+
 // INICIALIZA O CLIENT
 client.initialize();
-
 // ======================= DADOS =======================
 const pizzas = [
     "Calabresa", "Frango Catupiry", "Quatro Queijos", 
