@@ -29,8 +29,8 @@ const client = new Client({
             '--no-first-run',
             '--no-zygote',
             '--disable-gpu'
-        ],
-        executablePath: '/usr/bin/chromium'
+        ]
+        // remove executablePath completamente
     }
 });
 
