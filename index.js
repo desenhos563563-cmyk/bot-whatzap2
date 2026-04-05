@@ -13,15 +13,15 @@ process.on('uncaughtException', (err) => {
     console.error('❌ EXCEPTION:', err);
 });
 
-// CLIENT CONFIGURADO PARA CHROMIUM DO SISTEMA
+// CLIENT CONFIGURADO PARA CHROMIUM DO CONTAINER
 const client = new Client({
     authStrategy: new LocalAuth({
         clientId: "bot",
-        dataPath: "/tmp/session"
+        dataPath: "/app/session" // Persistência via volume Docker
     }),
     puppeteer: {
         headless: true,
-        executablePath: '/usr/bin/chromium', // Caminho do Chromium no Render
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -39,6 +39,9 @@ client.on('qr', qr => {
     console.log('Escaneie o QR abaixo:');
     qrcode.generate(qr, { small: true });
 });
+
+client.on('authenticated', () => console.log('✅ Autenticado!'));
+client.on('auth_failure', () => console.log('❌ Falha na autenticação!'));
 
 // ======================= READY =======================
 client.on('ready', () => {
