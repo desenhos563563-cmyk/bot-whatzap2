@@ -1,8 +1,21 @@
-// IMPORTS ESSENCIAIS
+```js
+// ================= IMPORTS =================
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
+const express = require("express");
 
-// LOGS E DEBUG
+// ================= WEB SERVER (RENDER) =================
+const app = express();
+
+app.get("/", (req, res) => {
+    res.send("🤖 Bot rodando!");
+});
+
+app.listen(process.env.PORT || 3000, () => {
+    console.log("🌐 Servidor web ativo");
+});
+
+// ================= LOGS =================
 console.log("🚀 Iniciando bot...");
 
 process.on('unhandledRejection', (err) => {
@@ -13,11 +26,11 @@ process.on('uncaughtException', (err) => {
     console.error('❌ EXCEPTION:', err);
 });
 
-// CLIENT CONFIGURADO PARA CHROMIUM DO CONTAINER
+// ================= CLIENT =================
 const client = new Client({
     authStrategy: new LocalAuth({
         clientId: "bot",
-        dataPath: "/app/session" // Persistência via volume Docker
+        dataPath: "/app/session"
     }),
     puppeteer: {
         headless: true,
@@ -34,22 +47,23 @@ const client = new Client({
     }
 });
 
-// ======================= QR =======================
+// ================= QR =================
 client.on('qr', qr => {
-    console.log('Escaneie o QR abaixo:');
+    console.log('📱 Escaneie o QR:');
     qrcode.generate(qr, { small: true });
 });
 
 client.on('authenticated', () => console.log('✅ Autenticado!'));
 client.on('auth_failure', () => console.log('❌ Falha na autenticação!'));
 
-// ======================= READY =======================
+// ================= READY =================
 client.on('ready', () => {
     console.log('🤖 Bot pronto!');
 });
 
-// INICIALIZA O CLIENT
+// ================= INICIAR BOT =================
 client.initialize();
+
 // ======================= DADOS =======================
 const pizzas = [
     "Calabresa", "Frango Catupiry", "Quatro Queijos", 
